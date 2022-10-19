@@ -50,7 +50,7 @@ public class waypointScript : MonoBehaviour
         text = canvas.transform.GetChild(0).GetComponent<TMP_Text>();
        updateInfections();
         infectButton = canvas.GetComponent<Button>();
-        infectButton.onClick.AddListener(onButtonClick); //subscribe to the onClick event
+        infectButton.onClick.AddListener(onButtonClick); //subscribe to the onButtonClick event
     }
     private void updateInfections()
     {
