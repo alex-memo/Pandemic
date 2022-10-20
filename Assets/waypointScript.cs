@@ -14,8 +14,10 @@ public class waypointScript : MonoBehaviour
     private TMP_Text text;
     private Button infectButton;
     private Transform radioActiveHolder;
-    
-    
+
+    public GameObject researchUI;
+    public GameObject goHereUI;
+
     
     public void onMaxInfect()
     {
@@ -23,18 +25,22 @@ public class waypointScript : MonoBehaviour
         {
             if (place.GetComponent<waypointScript>().getNumberInfections() < 3)
             {
-                place.GetComponent<waypointScript>().Infect();
+                place.GetComponent<waypointScript>().Infect(1);
             }
         }
 
     }
-    public void Infect()
+    public void Infect(int infectionNumber)
     {
         print(this.name + " " + numberInfections);
         
         if (numberInfections < 3)
         {
-            numberInfections++;
+            numberInfections+=infectionNumber;
+            if (numberInfections > 3)
+            {
+                numberInfections = 3;
+            }
         }
         else//means 3 infections in site
         {
@@ -58,14 +64,16 @@ public class waypointScript : MonoBehaviour
     }
     private void onButtonClick()
     {
-        Infect();
+        //Infect();
         //prompt ui
         if (isResearch)
         {
+            researchUI.SetActive(true);
             //prompt research ui
         }
         else
         {
+            goHereUI.SetActive(true);
             //prompt 
         }
         //make player go here 
@@ -89,5 +97,14 @@ public class waypointScript : MonoBehaviour
             i++;
         }
 
+    }
+    public void cure(int temp)
+    {
+        numberInfections--;
+        if (numberInfections < 0)
+        {
+            numberInfections = 0;
+        }
+        updateRadioactiveUI();
     }
 }

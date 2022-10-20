@@ -24,11 +24,11 @@ public class gameManagerScript : MonoBehaviour
         string s = "";
         if (role.Equals("Medic"))
         {
-            s = "Every 2 rounds will heal 1 spot completely.\nPassive: Will heal 2x the desired location.";
+            s = "Every 4 rounds will heal 1 spot completely.\nPassive: Will heal 2x the desired location.";
         }
         else if (role.Equals("Scientist"))
         {
-            s = "Every 2 rounds you will get 1 research\nPassive: Research will only consume 1 turn instead of 2.";//researches 
+            s = "Every 4 rounds you will get 1 research\nPassive: Research can be done anywhere in the map.";//researches 
         }
         else if (role.Equals("Quarantine Master"))
         {
@@ -40,13 +40,38 @@ public class gameManagerScript : MonoBehaviour
         }
         return s;
     }
+    public string getRole()
+    {
+        int rand = Random.Range(0, roles.Length);
+        return roles[rand];
+    }
     public void onRoundEnd()
     {
         //add one to round counter text
         round++;
+        addDiseaseRoundEnd();
+        addDiseaseRoundEnd();
+    }
+    private void addDiseaseRoundEnd()
+    {
         int rand = Random.Range(0, waypointHolder.instance.waypoints.Count);
-        waypointHolder.instance.waypoints[rand].GetComponent<waypointScript>().Infect();
+        int infectionNumber;
+        if (round < 5)//if round is less than 5 only give one infection
+        {
+            infectionNumber = 1;
+        }
+        else if (round < 10)//gives 2 infection
+        {
+            infectionNumber = 2;
+        }
+        else//round is above 10
+        {
+            infectionNumber = 3;//gives 3 infection
+        }
+
+        waypointHolder.instance.waypoints[rand].GetComponent<waypointScript>().Infect(infectionNumber);
         print("infected" + waypointHolder.instance.waypoints[rand].name);
+
     }
     //research will consume 2 turns
 }
