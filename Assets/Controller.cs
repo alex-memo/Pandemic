@@ -12,5 +12,16 @@ public class Controller : MonoBehaviour
             instance = this;
         }
     }
+    private void Start()
+    {
+        getRole();
+    }
+    private void getRole()
+    {
 
+    }
+    public void showRoleDescription()
+    {
+
+    }
 }

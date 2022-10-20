@@ -13,20 +13,18 @@ public class waypointScript : MonoBehaviour
     private bool isResearch;
     private TMP_Text text;
     private Button infectButton;
+    private Transform radioActiveHolder;
     
     
     
     public void onMaxInfect()
     {
-        int i = 0;
-        while (i < borderPlaces.Count)
+        foreach(GameObject place in borderPlaces)
         {
-            if (borderPlaces[i].GetComponent<waypointScript>().getNumberInfections()==3)
+            if (place.GetComponent<waypointScript>().getNumberInfections() < 3)
             {
-                return;
+                place.GetComponent<waypointScript>().Infect();
             }
-            borderPlaces[i].GetComponent<waypointScript>().Infect();
-            i++;
         }
 
     }
@@ -48,20 +46,48 @@ public class waypointScript : MonoBehaviour
     {
         GameObject canvas = Instantiate(gameManagerScript.instance.canvasPrefab, this.transform);
         text = canvas.transform.GetChild(0).GetComponent<TMP_Text>();
-       updateInfections();
+        radioActiveHolder = canvas.transform.GetChild(1);
+        updateInfections();
         infectButton = canvas.GetComponent<Button>();
         infectButton.onClick.AddListener(onButtonClick); //subscribe to the onButtonClick event
     }
     private void updateInfections()
     {
         text.text = numberInfections.ToString();
+        updateRadioactiveUI();
     }
     private void onButtonClick()
     {
         Infect();
+        //prompt ui
+        if (isResearch)
+        {
+            //prompt research ui
+        }
+        else
+        {
+            //prompt 
+        }
+        //make player go here 
+        
     }
     public int getNumberInfections()
     {
         return numberInfections;
+    }
+    private void updateRadioactiveUI()
+    {
+        foreach (Transform child in radioActiveHolder)
+        {
+            Destroy(child.gameObject);
+        }
+        int i = 0;
+
+        while (i<numberInfections)
+        {
+            Instantiate(gameManagerScript.instance.radioactivePrefab, radioActiveHolder.transform);
+            i++;
+        }
+
     }
 }
