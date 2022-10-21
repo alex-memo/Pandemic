@@ -6,6 +6,10 @@ public class waypointHolder : MonoBehaviour
 {
     public static waypointHolder instance;
     public List<GameObject> waypoints= new List<GameObject>();
+    /**
+ * @memo 2022
+ * Creates an instance of this script
+ */
     private void Awake()
     {
         if (instance == null)
@@ -13,6 +17,10 @@ public class waypointHolder : MonoBehaviour
             instance = this;
         }
     }
+    /**
+ * @memo 2022
+ * start method
+ */
     private void Start()
     {
         foreach(Transform child in this.transform)
@@ -20,6 +28,10 @@ public class waypointHolder : MonoBehaviour
             waypoints.Add(child.gameObject);
         }
     }
+    /**
+ * @memo 2022
+ * on round en do this, not implemented due to time restrictions
+ */
     public void onRoundEnd()//when round ends
     {
         //if there is an infection anywhere add one to that infection
@@ -29,6 +41,7 @@ public class waypointHolder : MonoBehaviour
             {
                 place.GetComponent<waypointScript>().Infect(1);
             }
+
             
         }
     }

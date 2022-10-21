@@ -15,10 +15,12 @@ public class waypointScript : MonoBehaviour
     private Button infectButton;
     private Transform radioActiveHolder;
 
-    public GameObject researchUI;
-    public GameObject goHereUI;
 
-    
+
+    /**
+ * @memo 2022
+ * when max infect outbreak
+ */
     public void onMaxInfect()
     {
         foreach(GameObject place in borderPlaces)
@@ -30,6 +32,10 @@ public class waypointScript : MonoBehaviour
         }
 
     }
+    /**
+ * @memo 2022
+ * infects this place
+ */
     public void Infect(int infectionNumber)
     {
         print(this.name + " " + numberInfections);
@@ -48,41 +54,73 @@ public class waypointScript : MonoBehaviour
         }
         updateInfections();
     }
+    /**
+ * @memo 2022
+ * start method
+ */
     private void Start()
     {
         GameObject canvas = Instantiate(gameManagerScript.instance.canvasPrefab, this.transform);
         text = canvas.transform.GetChild(0).GetComponent<TMP_Text>();
         radioActiveHolder = canvas.transform.GetChild(1);
-        updateInfections();
+        
         infectButton = canvas.GetComponent<Button>();
         infectButton.onClick.AddListener(onButtonClick); //subscribe to the onButtonClick event
+        if (isResearch)
+        {
+            Instantiate(gameManagerScript.instance.researchPrefab, this.transform);
+        }
+        updateInfections();
     }
+    /**
+ * @memo 2022
+ * updates the infections in this place
+ */
     private void updateInfections()
     {
+        //print(text);
+        if (text == null)
+        {
+            return;
+        }
         text.text = numberInfections.ToString();
         updateRadioactiveUI();
     }
+    /**
+ * @memo 2022
+ * on button clicked
+ */
     private void onButtonClick()
     {
-        //Infect();
+
         //prompt ui
+        
         if (isResearch)
         {
-            researchUI.SetActive(true);
+            //researchUI.SetActive(true);
             //prompt research ui
+            Controller.instance.researchPrompt(this.name);
         }
         else
         {
-            goHereUI.SetActive(true);
-            //prompt 
+            Controller.instance.goHerePrompt(this.name);
         }
         //make player go here 
         
+        
     }
+    /**
+ * @memo 2022
+ * getter for number of infections
+ */
     public int getNumberInfections()
     {
         return numberInfections;
     }
+    /**
+ * @memo 2022
+ * updates the radioactive ui
+ */
     private void updateRadioactiveUI()
     {
         foreach (Transform child in radioActiveHolder)
@@ -98,6 +136,10 @@ public class waypointScript : MonoBehaviour
         }
 
     }
+    /**
+ * @memo 2022
+ * cleanses this place by a set amount
+ */
     public void cure(int temp)
     {
         numberInfections--;
@@ -105,6 +147,6 @@ public class waypointScript : MonoBehaviour
         {
             numberInfections = 0;
         }
-        updateRadioactiveUI();
+        updateInfections();
     }
 }

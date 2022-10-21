@@ -12,6 +12,13 @@ public class gameManagerScript : MonoBehaviour
     public static gameManagerScript instance;
     public string[] roles;
     public Sprite[] roleImage;
+
+    public GameObject CloudPrefab;
+    private GameObject cloud;
+    /**
+ * @memo 2022
+ * Creates instence of this script
+ */
     private void Awake()
     {
         if (instance == null)
@@ -19,12 +26,16 @@ public class gameManagerScript : MonoBehaviour
             instance = this;
         }
     }
+    /**
+     * @memo 2022
+     * gets the description of the selected role
+     */
     public string getRoleDescription(string role)
     {
         string s = "";
         if (role.Equals("Medic"))
         {
-            s = "Every 4 rounds will heal 1 spot completely.\nPassive: Will heal 2x the desired location.";
+            s = "Every round get 1 extra research point.\nPassive: Will heal 2x the desired location.";
         }
         else if (role.Equals("Scientist"))
         {
@@ -40,9 +51,14 @@ public class gameManagerScript : MonoBehaviour
         }
         return s;
     }
+    /**
+ * @memo 2022
+ * gets a random role from the list
+ */
     public string getRole()
     {
         int rand = Random.Range(0, roles.Length);
+        Controller.instance.roleImage.sprite = roleImage[rand];
         return roles[rand];
     }
     public void onRoundEnd()
@@ -51,7 +67,27 @@ public class gameManagerScript : MonoBehaviour
         round++;
         addDiseaseRoundEnd();
         addDiseaseRoundEnd();
+        if (Controller.instance.getCurrentRole().Equals("Scientist"))
+        {
+            if (round % 4 == 0)
+            {
+                Controller.instance.researchPoints++;
+            }
+        }
+        //waypointHolder.instance.onRoundEnd();
     }
+    /**
+ * @memo 2022
+ * Start method, genereates 2 diseases in a random position
+ */
+    private void Start()
+    {
+        addSetDisease(2);
+    }
+    /**
+ * @memo 2022
+ * adds disease on round end
+ */
     private void addDiseaseRoundEnd()
     {
         int rand = Random.Range(0, waypointHolder.instance.waypoints.Count);
@@ -72,6 +108,48 @@ public class gameManagerScript : MonoBehaviour
         waypointHolder.instance.waypoints[rand].GetComponent<waypointScript>().Infect(infectionNumber);
         print("infected" + waypointHolder.instance.waypoints[rand].name);
 
+    }
+    /**
+ * @memo 2022
+ * adds a set asmount of diseases to a random place
+ */
+    private void addSetDisease(int numberDisease)
+    {
+        int rand = Random.Range(0, waypointHolder.instance.waypoints.Count);
+        waypointHolder.instance.waypoints[rand].GetComponent<waypointScript>().Infect(numberDisease);
+        print("infected" + waypointHolder.instance.waypoints[rand].name);
+    }
+    /**
+ * @memo 2022
+ * update method used only for clouds
+ */
+    private void Update()
+    {
+        cloudManager();
+    }
+    /**
+ * @memo 2022
+ * cloud movement
+ */
+    private void cloudManager()
+    {
+        if (transform.childCount == 0)
+        {
+             cloud= Instantiate(CloudPrefab, this.transform);
+            cloud.transform.position = new Vector3(15f, 0, 0);
+        }
+        //GameObject cloud= Instantiate(CloudPrefab, this.transform);
+        if (cloud == null) { return; }
+        if (cloud.transform.position.x > -11) 
+        {
+            
+                cloud.transform.position= new Vector3(cloud.transform.position.x-Time.deltaTime, 0, 0);
+
+        }
+        else
+        {
+            Destroy(cloud);
+        }
     }
     //research will consume 2 turns
 }
