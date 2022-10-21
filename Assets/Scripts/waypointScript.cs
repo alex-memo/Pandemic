@@ -94,6 +94,7 @@ public class waypointScript : MonoBehaviour
     {
 
         //prompt ui
+        //Infect(1);
         
         if (isResearch)
         {
